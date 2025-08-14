@@ -1,45 +1,43 @@
 from graphviz import Digraph
 
 # 
-def postfixToAst(postfix):
+def postfixToAst(postfix:str) -> str:
 
-    tree_stack = [] # 'stack' with sons and it's father
+    # flatten ast
+    ast:list  = []
 
     for i in range(len(postfix)):
         c = postfix[i]
-
-        if c == '\\' and i + 1 < len(postfix):
-            tree_stack.append(c + postfix[i + 1])
-            i += 1
-            continue
-
         if c == '∘':
-            if len(tree_stack) >= 2:
-                right = tree_stack.pop()
-                left = tree_stack.pop()
-                if isinstance(right, str):
-                    tree_stack.append((right, left))
-                else:
-                    tree_stack.append((c, left, right))
-            elif len(tree_stack) == 1:
-                operand = tree_stack.pop()
-                tree_stack.append((operand))
+            if len(ast) >= 2:
+
+                right = ast.pop()
+                left = ast.pop()
+                ast.append((c, left, right))
+
+            elif len(ast) == 1:
+                operand = ast.pop()
+                ast.append((operand))
+
         elif c  in ['|', '^']:
-            right = tree_stack.pop()
-            left = tree_stack.pop()
-            tree_stack.append((c, left, right))
+
+            right = ast.pop()
+            left = ast.pop()
+
+            ast.append((c, left, right))
         elif c == '*':
-            operand = tree_stack.pop()
-            tree_stack.append((c, operand))
+
+            operand = ast.pop()
+            ast.append((c, operand))
         else:
-            tree_stack.append(c)
 
-    return tree_stack[-1] if tree_stack else None
+            ast.append(c)
 
+    return ast[-1]
 
 
 # This function the only porpuse it's to turn the AST from the postfix (which can be parse with te graphviz AST method)
-def astToGraph(node, graph=None, parent=None):
+def astToGraph(node: str, graph:Digraph | None = None, parent:tuple | None = None) -> Digraph:
     if graph is None:
         graph = Digraph() # for the base case
 
