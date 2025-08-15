@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
         ast = postfixToAst(postfix)
 
-        astToGraph(ast).render(f'sintax_tree_{lines.index(line) + 1}', format='png', cleanup=True)
+        astToGraph(ast).render(f'tree_imgs/syntax_tree_{lines.index(line) + 1}', format='png', cleanup=True)
         # for showing the Ast
 
 
