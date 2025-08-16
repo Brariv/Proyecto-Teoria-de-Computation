@@ -1,3 +1,4 @@
+from graphviz import Digraph
 from parsing.nfa import postfixToNfa
 
 # Helper function - Returns set of states that can be reached from state following e arrows
@@ -14,7 +15,7 @@ def followes(state):
       states |= followes(state.edge1)
     # If there's an 'edge2', follow it
     if state.edge2 is not None:
-      print(state.edge2)
+      print(f"edge2 {state.edge2.label}")
       states |= followes(state.edge2)
 
   # Returns the set of states
