@@ -8,6 +8,8 @@ if __name__ == "__main__":
     filename:str = "files/regex.txt" 
     lines:list[str] = fileReader(filename) 
 
+    string:str = "a"
+
     print(lines)
     for line in lines:
         print(line)
@@ -15,7 +17,7 @@ if __name__ == "__main__":
 
         print(postfix)
 
-        print(line,"0",matchStringToRegex(postfix,"a"))
+        print(line,string,matchStringToRegex(postfix,string))
 
         # for showing the Ast
 
