@@ -1,64 +1,64 @@
-
+from graphviz import Digraph
 # State class - Represents a state with two arrows, labelled by label.
-
-
-# Dunno how own class-type in class
-class State:
-    label = None,
-    edge1 = None,
-    edge2 = None
+class state:
+    label, edge1, edge2 = None, None, None
 
 
 # NFA class
-class Nfa:
+class nfa:
     initial, accept = None, None
     
     def __init__(self, initial, accept):
         self.initial, self.accept = initial, accept
 
 def postfixToNfa(pofix):
-  # Creates new empty set
-  nfaStack = []
+      # Creates new empty set
+    nfaStack:list = []
 
-  for c in pofix:
-    if c == '∗':
-        nfa1 = nfaStack.pop()
 
-        initial, accept = State(), State()
+    for c in pofix:
+        if c == '∗':
+            nfa1 = nfaStack.pop()
 
-        initial.edge1, initial.edge2 = nfa1.initial, accept #type: ignore
+            initial, accept = state(), state()
 
-        nfa1.accept.edge1, nfa1.accept.edge2 = nfa1.initial, accept
+            initial.edge1, initial.edge2 = nfa1.initial, accept #type: ignore
 
-        nfaStack.append(Nfa(initial, accept))
-    elif c == '.':
-      nfa2, nfa1 = nfaStack.pop(), nfaStack.pop()
+            nfa1.accept.edge1, nfa1.accept.edge2 = nfa1.initial, accept
 
-      nfa1.accept.edge1 = nfa2.initial
+            nfaStack.append(nfa(initial, accept))
+        elif c == '.':
+            nfa2, nfa1 = nfaStack.pop(), nfaStack.pop()
 
-      nfaStack.append(Nfa(nfa1.initial, nfa2.accept))
-    elif c == '|':
+            nfa1.accept.edge1 = nfa2.initial
 
-      nfa2, nfa1 = nfaStack.pop(), nfaStack.pop()
+            nfaStack.append(nfa(nfa1.initial, nfa2.accept))
+        elif c == '|':
 
-      initial = State()
-      initial.edge1, initial.edge2 = nfa1.initial, nfa2.initial
+            nfa2, nfa1 = nfaStack.pop(), nfaStack.pop()
 
-      accept = State()
-      nfa1.accept.edge1, nfa2.accept.edge1 = accept, accept
+            initial = state()
+            initial.edge1, initial.edge2 = nfa1.initial, nfa2.initial
 
-      nfaStack.append(Nfa(initial, accept))
+            accept = state()
+            nfa1.accept.edge1, nfa2.accept.edge1 = accept, accept
 
-    else:
+            nfaStack.append(nfa(initial, accept))
 
-      accept, initial = State(), State()
+        else:
 
-      initial.label, initial.edge1 = c, accept  #type: ignore
+            # the empty string, the one and only "UTF-8 friendly Epsilon"
+            if c == "E":
+                c = None
 
-      nfaStack.append(Nfa(initial, accept))
+            accept, initial = state(), state()
+
+            initial.label, initial.edge1 = c, accept #type: ignore
+
+            nfaStack.append(nfa(initial, accept))
 
   # at this point, nfastack should have a single nfa on it
-  return nfaStack.pop()
+    return nfaStack.pop()
 
 
 

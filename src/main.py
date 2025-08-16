@@ -12,10 +12,7 @@ if __name__ == "__main__":
 
     print(lines)
     for line in lines:
-        print(line)
         postfix = infixToPostfix(line)
-
-        print(postfix)
 
         print(line,string,matchStringToRegex(postfix,string))
 

@@ -9,10 +9,12 @@ def followes(state):
   # Check if state has arrows labelled e from it
   if state.label is None:
     # If there's an 'edge1', follow it
-    if state.edge1 is not None or state.edge1 == 'E':
+    if state.edge1 is not None:
+      print(f"edge1 {state.edge1.label}")
       states |= followes(state.edge1)
     # If there's an 'edge2', follow it
-    if state.edge2 is not None or state.edge2 == 'E':
+    if state.edge2 is not None:
+      print(state.edge2)
       states |= followes(state.edge2)
 
   # Returns the set of states
