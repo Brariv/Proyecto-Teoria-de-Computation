@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
         print(postfix)
 
-        print(line,"a",matchStringToRegex(postfix,"bbb"))
+        print(line,"0",matchStringToRegex(postfix,"a"))
 
         # for showing the Ast
 

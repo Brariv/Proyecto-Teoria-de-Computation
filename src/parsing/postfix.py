@@ -1,8 +1,23 @@
 
+# Balances the parentheses given expression some expression
+def _balanceExpression(expression_to_balance:str) -> str:
+    j = len(expression_to_balance) - 2
+    balance = 1
+    while j >= 0:
+        if expression_to_balance[j] == ')':
+            balance += 1
+        elif expression_to_balance[j] == '(':
+            balance -= 1
+        if balance == 0:
+            break
+        j -= 1
+
+    return expression_to_balance[j:]
+
 # this is a pretty big code snippet, but it does it's job
 def _expandRegex(regex:str) -> str:
 
-    result:str = ""
+    result:str = str()
 
     i:int = 0
 
@@ -18,19 +33,7 @@ def _expandRegex(regex:str) -> str:
             case '+':
                 prev:str = result[-1]
                 if prev == ')':
-                    # find the 'string that ends before the +
-                    j = len(result) - 2
-                    balance = 1
-                    while j >= 0:
-                        if result[j] == ')':
-                            balance += 1
-                        elif result[j] == '(':
-                            balance -= 1
-                        if balance == 0:
-                            break
-                        j -= 1
-                    group = result[j:]
-                    result += '.' + group + '∗'
+                    result += '.' + _balanceExpression(result) + '∗'
                 else:
                     result = result[:-1] + prev + '.' + prev + '∗'
             case '?':
@@ -47,8 +50,7 @@ def _expandRegex(regex:str) -> str:
                         if balance == 0:
                             break
                         j -= 1
-                    group = result[j:]
-                    result = result[:j] + '(' + group + '|E)'
+                    result = result[:j] + '(' + _balanceExpression(result) + '|E)'
                 else:
                     result = result[:-1] + '(' + prev + '|E)'
             case _:
@@ -63,8 +65,8 @@ def _expandRegex(regex:str) -> str:
 def _formatRegEx(regex):
 
     # this way of doing "static" declaraction I like, but not using the F***** []
-    alloperators:list[str] = ['|', '?', '+', '∗', '^', ')']
-    binaryoperators:list[str] = ['|', '^', '(']
+    alloperators:list[str] = ['|', '?', '+', '∗', ')']
+    binaryoperators:list[str] = ['|', '(']
 
     res:str = str()
 
@@ -105,10 +107,7 @@ def infixToPostfix(regex:str) -> str:
         '(': 1, 
         '|': 2, 
         '.': 3, 
-        '?': 4, 
-        '+': 4, 
         '∗': 4, 
-        '^': 5 
     }
 
 
