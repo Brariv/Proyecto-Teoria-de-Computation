@@ -1,4 +1,4 @@
-from match.nfa_match import matchStringToRegex
+from drawing.nfa import nfaToDiGraph
 from parsing.ast import astToGraph, postfixToAst
 from parsing.nfa import postfixToNfa
 from parsing.postfix import infixToPostfix
@@ -17,9 +17,11 @@ if __name__ == "__main__":
     for line in lines:
         postfix = infixToPostfix(line)
 
-        afn = postfixToNfa(postfix)
+        nfa = postfixToNfa(postfix)
 
         # for showing the Ast
+
+        nfaToDiGraph(nfa).render(f"nfa_imgs/nfa_from_{line}", format="png", cleanup=True) # To lazy for having the count, just making a random tree
 
 
 
