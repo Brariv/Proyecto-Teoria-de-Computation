@@ -1,4 +1,5 @@
-from parsing.ast import astToGraph, postfixToAst
+from match.dfa_match import matchStringToRegex
+from parsing.ast import postfixToAst
 from parsing.postfix import infixToPostfix
 from utils.file_parsing import fileReader
 
@@ -10,9 +11,12 @@ if __name__ == "__main__":
     for line in lines:
         postfix = infixToPostfix(line)
 
+        # Just for looking how the Nfa should look
+
         ast = postfixToAst(postfix)
 
-        astToGraph(ast).render(f'tree_imgs/syntax_tree_{lines.index(line) + 1}', format='png', cleanup=True)
+        print(matchStringToRegex(postfix, "a"))
+
         # for showing the Ast
 
 

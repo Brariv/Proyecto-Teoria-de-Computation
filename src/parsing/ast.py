@@ -1,6 +1,6 @@
 from graphviz import Digraph
 
-# 
+# postfix to an ASt implementation (like you can do the nda parsing with the postfi,) 
 def postfixToAst(postfix:str) -> str:
 
     # flatten ast
@@ -33,6 +33,7 @@ def postfixToAst(postfix:str) -> str:
 
             ast.append(c)
 
+    print(ast)
     return ast[-1]
 
 

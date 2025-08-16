@@ -1,5 +1,4 @@
 
-
 # this is a pretty big code snippet, but it does it's job
 def _expandRegex(regex:str) -> str:
 
@@ -147,6 +146,7 @@ def infixToPostfix(regex:str) -> str:
     while (len(stack) > 0):
         postfix += stack.pop()
 
+    print(postfix)
     return postfix
 
 
