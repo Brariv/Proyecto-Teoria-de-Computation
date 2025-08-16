@@ -1,6 +1,5 @@
 from parsing.nfa import postfixToNfa
 
-
 # Helper function - Returns set of states that can be reached from state following e arrows
 def followes(state):
   # Create a new set, with state as its only member
@@ -18,6 +17,7 @@ def followes(state):
 
   # Returns the set of states
   return states
+
 def matchStringToRegex(postfix, string):
   # Shunt and compile the regular expression
   nfa = postfixToNfa(postfix)

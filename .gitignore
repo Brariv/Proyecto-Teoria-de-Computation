@@ -4,3 +4,4 @@ files/
 include/
 lib/
 pyvenv.cfg
+shell.nix

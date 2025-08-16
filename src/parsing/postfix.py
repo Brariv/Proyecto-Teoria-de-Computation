@@ -10,7 +10,7 @@ def _expandRegex(regex:str) -> str:
         c = regex[i]
 
         match c:
-            case '\\':
+            case '\n':
                 result += c + regex[i + 1]
                 i += 2
                 continue
@@ -30,9 +30,9 @@ def _expandRegex(regex:str) -> str:
                             break
                         j -= 1
                     group = result[j:]
-                    result += '∘' + group + '*'
+                    result += '.' + group + '∗'
                 else:
-                    result = result[:-1] + prev + '∘' + prev + '*'
+                    result = result[:-1] + prev + '.' + prev + '∗'
             case '?':
                 prev:str = result[-1]
                 if prev == ')':
@@ -48,9 +48,9 @@ def _expandRegex(regex:str) -> str:
                             break
                         j -= 1
                     group = result[j:]
-                    result = result[:j] + '(' + group + '|ε)'
+                    result = result[:j] + '(' + group + '|E)'
                 else:
-                    result = result[:-1] + '(' + prev + '|ε)'
+                    result = result[:-1] + '(' + prev + '|E)'
             case _:
                 result += c
 
@@ -63,7 +63,7 @@ def _expandRegex(regex:str) -> str:
 def _formatRegEx(regex):
 
     # this way of doing "static" declaraction I like, but not using the F***** []
-    alloperators:list[str] = ['|', '?', '+', '*', '^', ')']
+    alloperators:list[str] = ['|', '?', '+', '∗', '^', ')']
     binaryoperators:list[str] = ['|', '^', '(']
 
     res:str = str()
@@ -71,7 +71,7 @@ def _formatRegEx(regex):
     for i in range(0, len(regex)):
         c1:str = regex[i]
 
-        if c1 == '\\' and i + 1 < len(regex):
+        if c1 == '\n' and i + 1 < len(regex):
             res += c1 + regex[i + 1]
             i += 1
             continue
@@ -81,11 +81,11 @@ def _formatRegEx(regex):
         if (i + 1 < len(regex)):
             c2:str = regex[i + 1]
 
-            if c2 == '\\' and i + 2 < len(regex):
+            if c2 == '\n' and i + 2 < len(regex):
                 c2 = regex[i + 2]
 
             if c1 != '(' and c2 != ')' and c2 not in alloperators and c1 not in binaryoperators:
-                res += '∘'
+                res += '.'
 
     return res
 
@@ -104,16 +104,16 @@ def infixToPostfix(regex:str) -> str:
     precedence:dict[str,int] = { 
         '(': 1, 
         '|': 2, 
-        '∘': 3, 
+        '.': 3, 
         '?': 4, 
         '+': 4, 
-        '*': 4, 
+        '∗': 4, 
         '^': 5 
     }
 
 
     for i in range(len(formattedRegEx)):
-        if formattedRegEx[i] == '\\' and i + 1 < len(formattedRegEx):
+        if formattedRegEx[i] == '\n' and i + 1 < len(formattedRegEx):
 
             postfix += formattedRegEx[i]
             postfix += formattedRegEx[i + 1]
@@ -146,7 +146,6 @@ def infixToPostfix(regex:str) -> str:
     while (len(stack) > 0):
         postfix += stack.pop()
 
-    print(postfix)
     return postfix
 
 

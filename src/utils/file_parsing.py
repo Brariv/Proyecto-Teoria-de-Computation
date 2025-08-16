@@ -10,6 +10,5 @@ def fileReader(filename:str) -> list[str]:
         except Exception as e:
             print(f"Error reading {filename}: {e}")
             filename = input("Enter the path to the text file: ")
-    return [line.strip() for line in lines][0:(len(lines) -1)]
-
+    return [line.strip() for line in lines]
 

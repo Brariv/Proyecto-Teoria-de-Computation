@@ -1,4 +1,3 @@
-from graphviz import Digraph
 
 # State class - Represents a state with two arrows, labelled by label.
 class state:
@@ -24,7 +23,7 @@ def postfixToNfa(pofix):
   # one character at a time
   for c in pofix:
     # If c is the 'kleene star' operator
-    if c == '*':
+    if c == '∗':
       # Pops single NFA from the stack
       nfa1 = nfaStack.pop()
       # Creating new initial and accept state

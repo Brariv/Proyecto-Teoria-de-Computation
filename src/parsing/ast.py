@@ -8,7 +8,7 @@ def postfixToAst(postfix:str) -> str:
 
     for i in range(len(postfix)):
         c = postfix[i]
-        if c == '∘':
+        if c == '.':
             if len(ast) >= 2:
 
                 right = ast.pop()
