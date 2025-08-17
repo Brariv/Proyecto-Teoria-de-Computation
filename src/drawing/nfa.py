@@ -13,10 +13,10 @@ def add_state(nfa_render, visited, state, state_id, state_idx):
         
 
         if state.edge1: # Checking for existance
-            nfa_render.edge(state_id, str(id(state.edge1)), label=state.label if state.label else "E") # the one and only, friendly utf-8 epsilon
+            nfa_render.edge(state_id, str(id(state.edge1)), label=state.label if state.label else "𝜀") # f**** hate this ascci not friendly epislon
         if state.edge2: # Checking for existance
-            nfa_render.edge(state_id, str(id(state.edge2)), label="E") # the one and only, friendly utf-8 epsilon
-
+            nfa_render.edge(state_id, str(id(state.edge2)), label="𝜀") # f**** hate this ascci not friendly epislon
+ 
 
 
 # given our NFA, retunrs a graph for graphviz to parse it

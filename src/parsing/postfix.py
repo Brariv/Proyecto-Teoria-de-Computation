@@ -50,9 +50,9 @@ def _expandRegex(regex:str) -> str:
                         if balance == 0:
                             break
                         j -= 1
-                    result = result[:j] + '(' + _balanceExpression(result) + '|E)'
+                    result = result[:j] + '(' + _balanceExpression(result) + '|𝜀)'
                 else:
-                    result = result[:-1] + '(' + prev + '|E)'
+                    result = result[:-1] + '(' + prev + '|𝜀)'
             case _:
                 result += c
 

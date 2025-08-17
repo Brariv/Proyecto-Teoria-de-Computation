@@ -70,7 +70,7 @@ def postfixToNfa(postfix: str) -> NFA:
 
             case _:
 
-                if c == "E":
+                if c == '𝜀':
                     c = None # when traversing, it will be better just to check for a 'None' type for taking advantage of the syntatic sugar
 
                 # The NFA as most Data Stuctures we create the references pretty implictly (not the whole thing, but nodes that reference other ones)
