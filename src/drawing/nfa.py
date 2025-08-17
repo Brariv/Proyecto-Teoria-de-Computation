@@ -19,7 +19,7 @@ def add_state(nfa_render, visited, state, state_id, state_idx):
  
 
 
-# given our NFA, retunrs a graph for graphviz to parse it
+# given our NFA, returns a graph for graphviz to parse it
 def nfaToDiGraph(nfa: NFA):
 
     nfa_render:Digraph = Digraph() # where we render the things
