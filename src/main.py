@@ -12,7 +12,7 @@ if __name__ == "__main__":
     filename:str = "files/regex.txt" 
     lines:list[str] = fileReader(filename) 
 
-    string:str = "000"
+    string:str = input("Add your cool string :D :")
 
     print(lines)
     for line in lines:
