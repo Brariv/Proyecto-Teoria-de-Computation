@@ -1,37 +1,50 @@
 
 def followes(start_state):
-    states = set()
-    stack = [start_state]  # stack to avoid recursion
+    # All the states that can be reached and will be visited
+    states_to_visit = set()
+
+    # we push to the stack the initial point of the nfa, and we start pushing to the stack all the subsecuent ones
+    stack = [start_state]
 
     while stack:
         state = stack.pop()
-        if state not in states:
-            states.add(state)
 
-            # If state has epsilon transition(s)
-            if state.label is None:
-                if state.edge1 is not None:
+        # If the state is NOT visited, re-add it to the stack
+        if state not in states_to_visit:
+            states_to_visit.add(state)
+
+            
+            if state.label is None: # Checking for existance and has a transition
+
+                if state.edge1 is not None: # Checking for children nodes
                     stack.append(state.edge1)
-                if state.edge2 is not None:
+                if state.edge2 is not None: # Checking for children nodes
                     stack.append(state.edge2)
 
-    return states
+    # Return all reachable states to visit
+    return states_to_visit
 
 
 def matchStringToNfa(nfa, string):
-    """Simulate NFA on a string without recursion."""
 
-    # Initial ε-closure
-    current = followes(nfa.initial)
+    current = followes(nfa.initial) # The current set of states
 
-    # Process input string
+    # Loop through each character in the string
+    # The main loop will process the tree for each character
     for s in string:
-        nexts = set()
+        nexts = set() # The next set of states
+
         for c in current:
+
+            # Checks state's transition with the current character of the string
             if c.label == s and c.edge1 is not None:
+
+                # we put the edge to be checked
                 nexts.update(followes(c.edge1))
+
+        # Set current to next and starts over
         current = nexts
 
-    # Accept if final state is reachable
+    # Check if the last state is an accept state
     return nfa.accept in current
 
