@@ -1,5 +1,5 @@
 
-def followes(start_state):
+def e_closure(start_state):
     # All the states that can be reached and will be visited
     states_to_visit = set()
 
@@ -27,7 +27,7 @@ def followes(start_state):
 
 def matchStringToNfa(nfa, string):
 
-    current = followes(nfa.initial) # The current set of states
+    current = e_closure(nfa.initial) # The current set of states
 
     # Loop through each character in the string
     # The main loop will process the tree for each character
@@ -40,7 +40,7 @@ def matchStringToNfa(nfa, string):
             if c.label == s and c.edge1 is not None:
 
                 # we put the edge to be checked
-                nexts.update(followes(c.edge1))
+                nexts.update(e_closure(c.edge1))
 
         # Set current to next and starts over
         current = nexts
