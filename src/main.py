@@ -13,8 +13,6 @@ if __name__ == "__main__":
     lines:list[str] = fileReader(filename) 
 
     string:str = input("Add your cool string :D :")
-    string = string.replace("a", "𝑎")
-    string = string.replace("b", "𝑏")
 
     print(lines)
     for line in lines:
