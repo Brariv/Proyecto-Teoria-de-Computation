@@ -13,7 +13,6 @@ def parseLexerArgs() -> Namespace:
     if parse_args.regex_file is None or parse_args.string is None:
         raise Exception("Arguments where not suplly")
 
-    print(parse_args._get_args())
     return parse_args
 
 
