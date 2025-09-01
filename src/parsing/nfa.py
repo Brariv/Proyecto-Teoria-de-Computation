@@ -6,8 +6,8 @@ class State:
     def __init__(self, label: str|None =None):
         self.label = label # instead of having explictly put the label in each edge, it's more intuitive to look at the labels as the one which contains the character (but you could put the label in the edge)
         # as we know, the Thompson algorithm will construct the NFA with only to possible edges per state
-        self.edge1 = None # to what Other state is referencing
-        self.edge2 = None# to what Other state is referencing
+        self.edge1:State|None = None # to what Other state is referencing
+        self.edge2:State|None = None# to what Other state is referencing
 
 
 

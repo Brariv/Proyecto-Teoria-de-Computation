@@ -1,5 +1,6 @@
 from drawing.nfa import nfaToDiGraph
 from match.nfa_match import matchStringToNfa
+from parsing.dfa import nfaToTransitionTable
 from parsing.nfa import postfixToNfa
 from parsing.postfix import infixToPostfix
 from utils.argument_parsing import parseLexerArgs
@@ -26,6 +27,9 @@ if __name__ == "__main__":
         nfaToDiGraph(nfa).render(f"nfa_imgs/nfa_from_{line}", format="png", cleanup=True) # To lazy for having the count, just making a random tree
 
         # For showing the dfa
+
+        if __debug__:
+            nfaToTransitionTable(nfa)
 
 
 
