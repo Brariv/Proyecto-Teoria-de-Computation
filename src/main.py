@@ -1,6 +1,6 @@
 from drawing.nfa import nfaToDiGraph
 from match.nfa_match import matchStringToNfa
-from parsing.dfa import nfaToTransitionTable
+from parsing.dfa import nfaToDfa
 from parsing.nfa import postfixToNfa
 from parsing.postfix import infixToPostfix
 from utils.argument_parsing import parseLexerArgs
@@ -29,7 +29,9 @@ if __name__ == "__main__":
         # For showing the dfa
 
         if __debug__:
-            nfaToTransitionTable(nfa)
+            dfa = nfaToDfa(nfa)
+
+            nfaToDiGraph(nfa).render(f"dfa_imgs/nfa_from_{line}", format="png", cleanup=True)
 
 
 

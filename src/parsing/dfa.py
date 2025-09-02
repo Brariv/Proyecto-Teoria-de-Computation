@@ -1,5 +1,40 @@
+from collections import deque
 from parsing.nfa import NFA, State
 from pprint import pprint
+
+
+class DFAState:
+    def __init__(self, nfa_states_set):
+        self.nfa_states = nfa_states_set
+        self.edges = {}
+
+
+
+def epsilonClosureTable(transition_table: dict[tuple[State,int], dict[str, list[State]]]) -> dict[tuple[State,int], set[tuple[State,int]]]:
+    closure_table: dict[tuple[State,int], set[tuple[State,int]]] = {}
+
+    for s_key in transition_table:
+        stack: list[tuple[State,int]] = [s_key]
+        closure: set[tuple[State,int]] = {s_key}
+
+        while stack:
+            current = stack.pop()
+            row = transition_table.get(current, {})
+            for next_state in row.get("𝜀", []):
+                # find tuple key(s) in table corresponding to this State object
+                for key in transition_table:
+                    if key[0] is next_state and key not in closure:
+                        closure.add(key)
+                        stack.append(key)
+        closure_table[s_key] = closure
+
+
+    if __debug__:
+        print("Epsilon Table")
+        pprint(closure_table)
+
+    return closure_table
+
 
 def addToStateRow(state_row: dict[str,list[State]], state:State | None, label: str) -> None:
     if state is not None:
@@ -54,13 +89,58 @@ def nfaToTransitionTable(nfa: NFA):
         state_idx+=1
 
     if __debug__:
+        print("Transition Table")
         pprint(transition_table)
 
     return transition_table
 
 
 
-def minimizeTransitionTable(transition_table:dict[tuple[State,int],list[tuple[str,State]]]):
-    for state in transition_table.items():
-        pass
+
+def nfaToDfa(nfa: NFA):
+    # Step 1: Build the NFA transition table
+    nfa_table = nfaToTransitionTable(nfa)
+    
+    # Step 2: Compute epsilon closures
+    e_closure = epsilonClosureTable(nfa_table)
+    
+    # Step 3: Extract input symbols (excluding epsilon)
+    input_symbols = set()
+    for row in nfa_table.values():
+        for sym in row:
+            if sym != "𝜀":
+                input_symbols.add(sym)
+    input_symbols = list(input_symbols)
+
+    # Step 4: Initialize DFA
+    start_state_key = (nfa.initial, 1)
+    start_closure = frozenset(e_closure[start_state_key])
+    dfa_start = DFAState(start_closure)
+
+    queue = deque([dfa_start])
+    seen_closures = {start_closure: dfa_start}
+
+    while queue:
+        current_dfa_state = queue.popleft()
+        for symbol in input_symbols:
+            next_nfa_states = set()
+            for nfa_state in current_dfa_state.nfa_states:
+                transitions = nfa_table.get(nfa_state, {})
+                for target in transitions.get(symbol, []):
+                    # Add epsilon closure of target
+                    for key in e_closure:
+                        if key[0] is target:
+                            next_nfa_states.update(e_closure[key])
+            if next_nfa_states:
+                next_closure = frozenset(next_nfa_states)
+                if next_closure not in seen_closures:
+                    new_dfa_state = DFAState(next_closure)
+                    seen_closures[next_closure] = new_dfa_state
+                    queue.append(new_dfa_state)
+                # Create DFA edge
+                current_dfa_state.edges[symbol] = seen_closures[next_closure]
+
+    # Optional: return both start state and all DFA states
+
+    return dfa_start
 
