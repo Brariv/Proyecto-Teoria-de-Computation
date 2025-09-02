@@ -1,9 +1,7 @@
-from typing import Dict
 from parsing.nfa import NFA, State
-from utils.fa_travel import move
 from pprint import pprint
 
-def addToStateRow(state_row, state):
+def addToStateRow(state_row: list[tuple[str,State]], state:State | None) -> None:
     if (state is not None):
         if (state.label is not None):
             label_1: str = state.label
@@ -11,8 +9,6 @@ def addToStateRow(state_row, state):
         else:
             label_1: str = "𝜀" 
             state_row.append((label_1, state))
-
-
 
 
 def nfaToTransitionTable(nfa: NFA):
@@ -39,7 +35,6 @@ def nfaToTransitionTable(nfa: NFA):
             state_row: list[tuple[str, State]] = list()
 
             # add the state to the rows for each label
-            addToStateRow(state_row, state)
             addToStateRow(state_row, state.edge1)
             addToStateRow(state_row, state.edge2)
 
@@ -54,8 +49,13 @@ def nfaToTransitionTable(nfa: NFA):
 
         state_idx+=1
 
-    pprint(transition_table)
+    if __debug__:
+        pprint(transition_table)
+
+    return transition_table
 
 
 
+#def minimizeTransitionTable(transition_table:dict[tuple[State,int],list[tuple[str,State]]]):
+#    for state in transition_table.items():
 
