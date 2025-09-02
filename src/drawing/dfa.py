@@ -1,35 +1,42 @@
 from graphviz import Digraph
 from collections import deque
 
+def add_dfa_state(dfa_render, visited, state, state_id, state_idx):
+    if state not in visited:
+        visited.add(state)
+
+        accepting_checks = []
+        for nfa_state, _ in state.nfa_states:
+            accepting_checks.append(nfa_state.edge1 is None and nfa_state.edge2 is None)
+
+        is_accepting = any(accepting_checks)
+
+
+        if is_accepting:
+            dfa_render.node(state_id, label=str(state_idx), shape="doublecircle")
+        else:
+            dfa_render.node(state_id, label=str(state_idx), shape="circle")
+
+        for symbol, next_state in state.edges.items():
+            dfa_render.edge(state_id, str(id(next_state)), label=symbol)
+
+
 def dfaToDiGraph(dfa_start):
-    dot = Digraph(format='png')
+    dfa_render: Digraph = Digraph(format='png')
+    visited: set = set()
+    state_idx: int = 0
 
-    # BFS traversal to cover all DFA states
-    queue = deque([dfa_start])
-    seen = {dfa_start: "D0"}  # mapping DFAState -> label
-    counter = 1
-    all_states = []
+    stack = [(dfa_start, str(id(dfa_start)))]
 
-    while queue:
-        current = queue.popleft()
-        current_label = seen[current]
-        all_states.append(current)
+    while stack:
+        state, state_id = stack.pop()
+        state_idx += 1
 
-        # Add edges
-        for symbol, next_state in current.edges.items():
-            if next_state not in seen:
-                seen[next_state] = f"D{counter}"
-                counter += 1
-                queue.append(next_state)
-            dot.edge(current_label, seen[next_state], label=symbol)
+        add_dfa_state(dfa_render, visited, state, state_id, state_idx)
 
-    # Now add nodes with correct shape (accepting states are doublecircle)
-    for state in all_states:
-        label = seen[state]
-        # Accepting if any NFA state in this DFA state has no outgoing edges
-        is_accepting = any(nfa_state.edge1 is None and nfa_state.edge2 is None for nfa_state, _ in state.nfa_states)
-        shape = 'doublecircle' if is_accepting else 'circle'
-        dot.node(label, shape=shape)
+        for next_state in state.edges.values():
+            if next_state not in visited:
+                stack.append((next_state, str(id(next_state))))
 
-    return dot
+    return dfa_render
 

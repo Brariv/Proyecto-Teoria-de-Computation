@@ -1,13 +1,12 @@
-from collections import deque
 from parsing.nfa import NFA, State as NFAState
 from pprint import pprint
 
+# I wasn't going to write that everytime I want it to type something
 
 # the first key is for state which we want to check there transtitions in question.
 # the second is for the label and to which states it goes
 TransitionTable = dict[tuple[NFAState,int], dict[str, list[NFAState]]]
 
-# 
 EpsilonTable = dict[tuple[NFAState,int], set[tuple[NFAState,int]]]
 
 # the rows in the transition table
@@ -70,6 +69,7 @@ def nfaToTransitionTable(nfa: NFA):
 
     stack = [nfa.initial]
 
+    # pretty similar as how we went through the nfa
     visited:set[NFAState] = set()
 
     state_idx:int = 1 # mosly debugging
@@ -77,8 +77,6 @@ def nfaToTransitionTable(nfa: NFA):
     while stack:
         # taking the state
         state:NFAState = stack.pop()
-
-        # we save the reference to the neighboars in to the transition_table
 
         # we get the labels that are pointing to different neighboars (it should only be 2)
         if state not in visited:
@@ -137,20 +135,28 @@ def nfaToDfa(nfa: NFA):
         for sym in row:
             if sym != "𝜀":
                 input_symbols.add(sym)
+
     input_symbols = list(input_symbols)
 
     # Step 4: Initialize DFA
     start_state_key = (nfa.initial, 1)
-    start_closure = frozenset(e_closure[start_state_key])
+    start_closure = set(e_closure[start_state_key])
     dfa_start = State(start_closure)
 
-    queue = deque([dfa_start])
-    seen_closures = {start_closure: dfa_start}
+    # self it's porpuse as a deque, more of it later
+    queue = [dfa_start]
+
+    seen_closures = {str(start_closure): dfa_start}
 
     while queue:
-        current_dfa_state = queue.popleft()
+
+        # like the left_pop
+        current_dfa_state = queue[0]
+        queue.remove(current_dfa_state)
+
         for symbol in input_symbols:
             next_nfa_states = set()
+
             for nfa_state in current_dfa_state.nfa_states:
                 transitions = nfa_table.get(nfa_state, {})
                 for target in transitions.get(symbol, []):
@@ -158,14 +164,15 @@ def nfaToDfa(nfa: NFA):
                     for key in e_closure:
                         if key[0] is target:
                             next_nfa_states.update(e_closure[key])
-            if next_nfa_states:
-                next_closure = frozenset(next_nfa_states)
-                if next_closure not in seen_closures:
+
+            if next_nfa_states != set():
+                next_closure = set(next_nfa_states)
+                if str(next_closure) not in seen_closures:
                     new_dfa_state = State(next_closure)
-                    seen_closures[next_closure] = new_dfa_state
+                    seen_closures[str(next_closure)] = new_dfa_state
                     queue.append(new_dfa_state)
-                # Create DFA edge
-                current_dfa_state.edges[symbol] = seen_closures[next_closure]
+
+                current_dfa_state.edges[symbol] = seen_closures[str(next_closure)]
 
 
     return dfa_start
