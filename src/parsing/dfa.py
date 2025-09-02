@@ -1,18 +1,15 @@
 from parsing.nfa import NFA, State
 from pprint import pprint
 
-def addToStateRow(state_row: list[tuple[str,State]], state:State | None, label: str | None) -> None:
-    if (state is not None):
-        if (label is not None):
-            state_row.append((label, state))
-        else:
-            state_row.append(("𝜀", state))
+def addToStateRow(state_row: dict[str,list[State]], state:State | None, label: str) -> None:
+    if state is not None:
+        state_row[label].append(state)
 
 
 def nfaToTransitionTable(nfa: NFA):
     # the first key is for state which we want to check there transtitions in question.
     # the second is for the label and to which states it goes
-    transition_table:dict[tuple[State,int],list[tuple[str,State]]] = {}
+    transition_table:dict[tuple[State,int],dict[str, list[State]]] = {}
 
     stack = [nfa.initial]
 
@@ -30,11 +27,20 @@ def nfaToTransitionTable(nfa: NFA):
         if state not in visited:
             visited.add(state)
             # We create the temporal row
-            state_row: list[tuple[str, State]] = list()
+            state_row: dict[str, list[State]] = dict()
+
+
+            label:str
+            if state.label is not None:
+                label = state.label
+            else: 
+                label = "𝜀"
+
+            state_row[label] = []
 
             # add the state to the rows for each label
-            addToStateRow(state_row, state.edge1, state.label)
-            addToStateRow(state_row, state.edge2, state.label)
+            addToStateRow(state_row, state.edge1, label)
+            addToStateRow(state_row, state.edge2, label)
 
             # and off you go to the transition table
             transition_table[(state,state_idx)] = state_row # I f**** hate type inference in dynamic programming languages
@@ -54,6 +60,7 @@ def nfaToTransitionTable(nfa: NFA):
 
 
 
-#def minimizeTransitionTable(transition_table:dict[tuple[State,int],list[tuple[str,State]]]):
-#    for state in transition_table.items():
+def minimizeTransitionTable(transition_table:dict[tuple[State,int],list[tuple[str,State]]]):
+    for state in transition_table.items():
+        pass
 
