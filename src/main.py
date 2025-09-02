@@ -1,3 +1,4 @@
+from drawing.dfa import dfaToDiGraph
 from drawing.nfa import nfaToDiGraph
 from match.nfa_match import matchStringToNfa
 from parsing.dfa import nfaToDfa
@@ -31,7 +32,7 @@ if __name__ == "__main__":
         if __debug__:
             dfa = nfaToDfa(nfa)
 
-            nfaToDiGraph(nfa).render(f"dfa_imgs/nfa_from_{line}", format="png", cleanup=True)
+            dfaToDiGraph(dfa).render(f"dfa_imgs/nfa_from_{line}", format="png", cleanup=True)
 
 
 
