@@ -1,6 +1,16 @@
 from typing import Dict
 from parsing.nfa import NFA, State
 from utils.fa_travel import move
+from pprint import pprint
+
+def addToStateRow(state_row, state):
+    if (state is not None):
+        if (state.label is not None):
+            label_1: str = state.label
+            state_row.append((label_1, state))
+        else:
+            label_1: str = "𝜀" 
+            state_row.append((label_1, state))
 
 
 
@@ -8,11 +18,13 @@ from utils.fa_travel import move
 def nfaToTransitionTable(nfa: NFA):
     # the first key is for state which we want to check there transtitions in question.
     # the second is for the label and to which states it goes
-    transition_table:dict[State,dict[str,State]] = {}
+    transition_table:dict[tuple[State,int],list[tuple[str,State]]] = {}
 
     stack = [nfa.initial]
 
     visited:set[State] = set()
+
+    state_idx:int = 1
 
     while stack:
         # taking the state
@@ -24,30 +36,15 @@ def nfaToTransitionTable(nfa: NFA):
         if state not in visited:
             visited.add(state)
             # We create the temporal row
-            state_row: dict[str,State] = dict()
+            state_row: list[tuple[str, State]] = list()
 
-            # we add the edges
-            if (state.edge1 is not None):
-                if (state.edge1.label is not None):
-                    label_1: str = state.edge1.label
-                    state_row[label_1] = state.edge1
-                else:
-                    label_1: str = "𝜀" 
-                    state_row[label_1] = state.edge1
-
-
-            if (state.edge2 is not None):
-                if (state.edge2.label is not None):
-                    label_2: str = state.edge2.label
-                    state_row[label_2] = state.edge2
-                else:
-                    label_2: str = "𝜀"
-                    state_row[label_2] = state.edge2
-
-
+            # add the state to the rows for each label
+            addToStateRow(state_row, state)
+            addToStateRow(state_row, state.edge1)
+            addToStateRow(state_row, state.edge2)
 
             # and off you go to the transition table
-            transition_table[state] = state_row # I f**** hate type inference in dynamic programming languages
+            transition_table[(state,state_idx)] = state_row # I f**** hate type inference in dynamic programming languages
 
         # We don't want it to add them if we already pass through them
         if state.edge1 and state.edge1 not in visited:
@@ -55,8 +52,9 @@ def nfaToTransitionTable(nfa: NFA):
         if state.edge2 and state.edge2 not in visited:
             stack.append(state.edge2)
 
-    print(transition_table)
-        
+        state_idx+=1
+
+    pprint(transition_table)
 
 
 
