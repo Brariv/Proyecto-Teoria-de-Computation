@@ -26,7 +26,7 @@ if __name__ == "__main__":
         else:
             print(f"The string: {parse_arguments.string}, is not part of the regex : {line}")
 
-        nfaToDiGraph(nfa).render(f"nfa_imgs/nfa_from_{line}", format="png", cleanup=True) # To lazy for having the count, just making a random tree
+        nfaToDiGraph(nfa).render(f"nfa_imgs/nfa_from_{line}", format="png", cleanup=True) # overriding the last one, so yeah
 
         # For showing the dfa
 
@@ -34,10 +34,6 @@ if __name__ == "__main__":
             dfa = nfaToDfa(nfa)
 
             dfaToDiGraph(dfa).render(f"dfa_imgs/dfa_from_{line}", format="png", cleanup=True)
-
-            minimize_dfa(dfa)
-
-            dfaToDiGraph(dfa).render(f"min_dfa_imgs/dfa_from_{line}", format="png", cleanup=True)
 
 
 
