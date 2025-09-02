@@ -1,14 +1,12 @@
 from parsing.nfa import NFA, State
 from pprint import pprint
 
-def addToStateRow(state_row: list[tuple[str,State]], state:State | None) -> None:
+def addToStateRow(state_row: list[tuple[str,State]], state:State | None, label: str | None) -> None:
     if (state is not None):
-        if (state.label is not None):
-            label_1: str = state.label
-            state_row.append((label_1, state))
+        if (label is not None):
+            state_row.append((label, state))
         else:
-            label_1: str = "𝜀" 
-            state_row.append((label_1, state))
+            state_row.append(("𝜀", state))
 
 
 def nfaToTransitionTable(nfa: NFA):
@@ -35,8 +33,8 @@ def nfaToTransitionTable(nfa: NFA):
             state_row: list[tuple[str, State]] = list()
 
             # add the state to the rows for each label
-            addToStateRow(state_row, state.edge1)
-            addToStateRow(state_row, state.edge2)
+            addToStateRow(state_row, state.edge1, state.label)
+            addToStateRow(state_row, state.edge2, state.label)
 
             # and off you go to the transition table
             transition_table[(state,state_idx)] = state_row # I f**** hate type inference in dynamic programming languages
