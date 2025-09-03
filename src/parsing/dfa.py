@@ -13,13 +13,75 @@ EpsilonTable = dict[tuple[NFAState,int], set[tuple[NFAState,int]]]
 StateRow = dict[str, list[NFAState]]
 
 class State:
-    def __init__(self, nfa_states_set):
-        self.nfa_states = nfa_states_set
-        self.edges = {}
+    def __init__(self, closure):
+        self.closure = closure 
+        self.edges = {} # for referencing another state, we just check is closure, cause we know they won't repeat
+
+def _addToStateRow(state_row: StateRow, state:NFAState | None, label: str) -> None:
+    if state is not None:
+        state_row[label].append(state)
+
+
+def _nfaToTransitionTable(nfa: NFA):
+    transition_table:TransitionTable = {}
+
+    stack = [nfa.initial]
+
+    # pretty similar as how we went through the nfa
+    visited:set[NFAState] = set()
+
+    state_idx:int = 1 # mosly debugging
+
+    while stack:
+        # taking the state
+        state:NFAState = stack.pop()
+
+        # we get the labels that are pointing to different neighboars (it should only be 2)
+        if state not in visited:
+            visited.add(state)
+
+            # we create the temporal row
+            state_row: StateRow = {}
+
+            # in the case there's not a label, we know that's an epsilon transition
+            label:str
+
+            if state.label is not None:
+                label = state.label
+            else: 
+                label = "𝜀"
+
+            state_row[label] = []
+
+            # add the state to the rows for each label
+            _addToStateRow(state_row, state.edge1, label)
+            _addToStateRow(state_row, state.edge2, label)
+
+            # and off you go to the transition table
+            transition_table[(state,state_idx)] = state_row # I f**** hate type inference in dynamic programming languages
+
+        # We don't want it to add them if we already pass through them
+        if state.edge1 and state.edge1 not in visited:
+            stack.append(state.edge1)
+        if state.edge2 and state.edge2 not in visited:
+            stack.append(state.edge2)
+
+        state_idx+=1 #mostly for debugging, just for keeping track of what state it's having the transitions
+
+
+    if __debug__: # pretty self explanatory
+        print("Transition Table")
+        pprint(transition_table)
+
+
+    return transition_table
 
 
 
-def epsilonClosureTable(transition_table: TransitionTable) -> EpsilonTable:
+
+
+
+def _epsilonClosureTable(transition_table: TransitionTable) -> EpsilonTable:
     closure_table: EpsilonTable = {}
 
     for state_key in transition_table: # we iterate over all states for checking there closures
@@ -59,119 +121,69 @@ def epsilonClosureTable(transition_table: TransitionTable) -> EpsilonTable:
     return closure_table
 
 
-def addToStateRow(state_row: StateRow, state:NFAState | None, label: str) -> None:
-    if state is not None:
-        state_row[label].append(state)
-
-
-def nfaToTransitionTable(nfa: NFA):
-    transition_table:TransitionTable = {}
-
-    stack = [nfa.initial]
-
-    # pretty similar as how we went through the nfa
-    visited:set[NFAState] = set()
-
-    state_idx:int = 1 # mosly debugging
-
-    while stack:
-        # taking the state
-        state:NFAState = stack.pop()
-
-        # we get the labels that are pointing to different neighboars (it should only be 2)
-        if state not in visited:
-            visited.add(state)
-
-            # we create the temporal row
-            state_row: StateRow = {}
-
-            # in the case there's not a label, we know that's an epsilon transition
-            label:str
-
-            if state.label is not None:
-                label = state.label
-            else: 
-                label = "𝜀"
-
-            state_row[label] = []
-
-            # add the state to the rows for each label
-            addToStateRow(state_row, state.edge1, label)
-            addToStateRow(state_row, state.edge2, label)
-
-            # and off you go to the transition table
-            transition_table[(state,state_idx)] = state_row # I f**** hate type inference in dynamic programming languages
-
-        # We don't want it to add them if we already pass through them
-        if state.edge1 and state.edge1 not in visited:
-            stack.append(state.edge1)
-        if state.edge2 and state.edge2 not in visited:
-            stack.append(state.edge2)
-
-        state_idx+=1 #mostly for debugging, just for keeping track of what state it's having the transitions
-
-
-    if __debug__: # pretty self explanatory
-        print("Transition Table")
-        pprint(transition_table)
-
-
-    return transition_table
-
-
-
 
 def nfaToDfa(nfa: NFA):
-    # Step 1: Build the NFA transition table
-    nfa_table = nfaToTransitionTable(nfa)
-    
-    # Step 2: Compute epsilon closures
-    e_closure = epsilonClosureTable(nfa_table)
-    
-    # Step 3: Extract input symbols (excluding epsilon)
+    transition_table = _nfaToTransitionTable(nfa)
+
+    e_closure = _epsilonClosureTable(transition_table)
+
+    # we could inyect the symbols, but it's just a better idea to get them from the "columns"
     input_symbols = set()
 
-    for row in nfa_table.values():
-        for sym in row:
+    for row in transition_table.values():
+
+        for sym in row.keys(): # we grabbing all the possible symbols from each row, which we know are the "keys" from the row (like the columns)
+
             if sym != "𝜀":
                 input_symbols.add(sym)
 
-    input_symbols = list(input_symbols)
+    input_symbols = list(input_symbols) # here are all the posible simbols that are in the regex
 
-    # Step 4: Initialize DFA
-    start_state_key = (nfa.initial, 1)
-    start_closure = set(e_closure[start_state_key])
-    dfa_start = State(start_closure)
+    # we get the closure of the first state
+    start_closure = set(e_closure[(nfa.initial, 1)])
+
+    # Pretty similar to the nfa, but instead of just having 2 nodes, we have all the collection off them
+    dfa_start = State(start_closure) # we won't need the nfa node no more
 
     # self it's porpuse as a deque, more of it later
-    queue = [dfa_start]
+    lifo_queue = [dfa_start]
 
+    # and we initialize the closures for creating states
     seen_closures = {str(start_closure): dfa_start}
 
-    while queue:
+    while lifo_queue:
 
-        # like the left_pop
-        current_dfa_state = queue[0]
-        queue.remove(current_dfa_state)
+        # we go from the first to the last one, like an inverse queue
+        current_dfa_state = lifo_queue[0]
+        lifo_queue.remove(current_dfa_state)
 
-        for symbol in input_symbols:
-            next_nfa_states = set()
 
-            for nfa_state in current_dfa_state.nfa_states:
-                transitions = nfa_table.get(nfa_state, {})
-                for target in transitions.get(symbol, []):
-                    # Add epsilon closure of target
-                    for key in e_closure:
-                        if key[0] is target:
-                            next_nfa_states.update(e_closure[key])
+        for symbol in input_symbols: # we are going to see the transition for each symbol
 
-            if next_nfa_states != set():
-                next_closure = set(next_nfa_states)
+            next_closure = set()
+
+            for nfa_state in current_dfa_state.closure: # we go through all the states in the closure of the nfa
+                
+                transitions = transition_table.get(nfa_state, {}) # we start seeing the transitions from the state in the closure
+
+                for target in transitions.get(symbol, []): # and we start looking through the transitions of the actual state on the closure
+
+                    for key in transition_table.keys(): # we go thorugh all the possible states
+                        if key[0] is target: # and if we see that state is in the closure
+                            next_closure.update(e_closure[key]) # we start agruppating them 
+
+            if next_closure != set():
+
+                #TODO: see a way for not repeating the creation of repeated closures
+
+                # the issue with this approach, is that we can repeate closures,
+                # but if we keep track of which ones have we seen, we can skip them
                 if str(next_closure) not in seen_closures:
-                    new_dfa_state = State(next_closure)
-                    seen_closures[str(next_closure)] = new_dfa_state
-                    queue.append(new_dfa_state)
+                    new_dfa_state = State(next_closure) # now we create a next state with those edges
+                    seen_closures[str(next_closure)] = new_dfa_state # and for not repeating
+                    lifo_queue.append(new_dfa_state)
 
+                # and now we have created an edge to that closure, which sooner or later it will also become a State
                 current_dfa_state.edges[symbol] = seen_closures[str(next_closure)]
 
 

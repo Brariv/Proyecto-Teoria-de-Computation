@@ -1,12 +1,12 @@
 from graphviz import Digraph
-from collections import deque
 
 def add_dfa_state(dfa_render, visited, state, state_id, state_idx):
     if state not in visited:
         visited.add(state)
 
         accepting_checks = []
-        for nfa_state, _ in state.nfa_states:
+
+        for nfa_state, _ in state.closure:
             accepting_checks.append(nfa_state.edge1 is None and nfa_state.edge2 is None)
 
         is_accepting = any(accepting_checks)
