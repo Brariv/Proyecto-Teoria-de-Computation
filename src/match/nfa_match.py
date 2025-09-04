@@ -1,7 +1,7 @@
 from utils.fa_travel import move
+from parsing.nfa import NFA, State as NFAState
 
-
-def matchStringToNfa(nfa, string):
+def matchStringToNfa(nfa:NFA, string:str) -> bool:
 
     current = move(nfa.initial) # The current set of states
 

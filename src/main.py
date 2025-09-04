@@ -1,6 +1,8 @@
-from drawing.dfa import dfaToDiGraph
+
 from drawing.nfa import nfaToDiGraph
+from drawing.dfa import dfaToDiGraph
 from match.nfa_match import matchStringToNfa
+from match.dfa_match import matchStringToDfa
 from parsing.dfa import  nfaToDfa
 from parsing.min_dfa import minimize_dfa
 from parsing.nfa import postfixToNfa
@@ -34,6 +36,13 @@ if __name__ == "__main__":
             dfa = nfaToDfa(nfa)
 
             dfaToDiGraph(dfa).render(f"dfa_imgs/dfa_from_{line}", format="png", cleanup=True)
+            dfa = minimize_dfa(dfa)
+            dfaToDiGraph(dfa).render(f"min_dfa_imgs/min_dfa_from_{line}", format="png", cleanup=True)
+            
+            if matchStringToDfa(dfa, parse_arguments.string):
+                print(f"The string: {parse_arguments.string}, is part of the regex : {line}")
+            else:
+                print(f"The string: {parse_arguments.string}, is not part of the regex : {line}")
 
 
 

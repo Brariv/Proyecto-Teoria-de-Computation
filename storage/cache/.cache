@@ -1,0 +1,7 @@
+# Random cache data - generated for testing purposes
+
+user_session_12345: {"token": "a8f3e2c1b4", "expires": "2024-07-01T12:00:00Z"}
+temp_result_98765: {"status": "pending", "created": "2024-06-15T09:30:00Z"}
+query_cache_abcde: {"result": [1,2,3,4,5], "cached_at": "2024-06-15T10:00:00Z"}
+file_hash_001: "e3b0c44298fc1c149afbf4c8996fb924"
+settings_cache: {"theme": "dark", "lang": "en", "last_update": "2024-06-15T08:45:00Z"}

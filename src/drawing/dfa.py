@@ -1,4 +1,6 @@
 from graphviz import Digraph
+from parsing.dfa import State as DFA
+
 
 def add_dfa_state(dfa_render, visited, state, state_id, state_idx):
     if state not in visited:
@@ -21,7 +23,7 @@ def add_dfa_state(dfa_render, visited, state, state_id, state_idx):
             dfa_render.edge(state_id, str(id(next_state)), label=symbol)
 
 
-def dfaToDiGraph(dfa_start):
+def dfaToDiGraph(dfa_start: DFA):
     dfa_render: Digraph = Digraph(format='png')
     visited: set = set()
     state_idx: int = 0
