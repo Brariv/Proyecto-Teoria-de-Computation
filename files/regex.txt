@@ -1,2 +1,3 @@
 (a|t)c
 (a|t)(ab)∗
+aceto
