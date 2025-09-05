@@ -1,4 +1,3 @@
-
 from drawing.nfa import nfaToDiGraph
 from drawing.dfa import dfaToDiGraph
 from match.nfa_match import matchStringToNfa
@@ -22,27 +21,33 @@ if __name__ == "__main__":
 
         nfa = postfixToNfa(postfix)
 
-        # For showing the nfa
-        if matchStringToNfa(nfa, parse_arguments.string):
-            print(f"The string: {parse_arguments.string}, is part of the regex : {line}")
-        else:
-            print(f"The string: {parse_arguments.string}, is not part of the regex : {line}")
+        dfa = nfaToDfa(nfa)
 
         nfaToDiGraph(nfa).render(f"nfa_imgs/nfa_from_{line}", format="png", cleanup=True) # overriding the last one, so yeah
 
-        # For showing the dfa
+        dfaToDiGraph(dfa).render(f"dfa_imgs/dfa_from_{line}", format="png", cleanup=True)  # overriding the last one, so yeah
 
-        if __debug__:
-            dfa = nfaToDfa(nfa)
+        dfa = minimize_dfa(dfa)
 
-            dfaToDiGraph(dfa).render(f"dfa_imgs/dfa_from_{line}", format="png", cleanup=True)  # overriding the last one, so yeah
-            dfa = minimize_dfa(dfa)
-            dfaToDiGraph(dfa).render(f"min_dfa_imgs/min_dfa_from_{line}", format="png", cleanup=True)  # overriding the last one, so yeah
-            
-            if matchStringToDfa(dfa, parse_arguments.string):
-                print(f"The string: {parse_arguments.string}, is part of the regex : {line}")
-            else:
-                print(f"The string: {parse_arguments.string}, is not part of the regex : {line}")
+        dfaToDiGraph(dfa).render(f"min_dfa_imgs/min_dfa_from_{line}", format="png", cleanup=True)  # overriding the last one, so yeah
+ 
+
+        print(f"\nGoing through regex: {line}")
+
+        print("NFA Matching")
+
+        if matchStringToNfa(nfa, parse_arguments.string):
+            print(f"The string: {parse_arguments.string}, didn't match the NFA")
+        else:
+            print(f"The string: {parse_arguments.string}, didn't match the NFA")
+
+
+        print("\nDFA Matching")
+
+        if matchStringToDfa(dfa, parse_arguments.string):
+            print(f"The string: {parse_arguments.string}, didn't match the DFA")
+        else:
+            print(f"The string: {parse_arguments.string}, didn't match the DFA")
 
 
 
