@@ -34,10 +34,8 @@ def minimize_dfa(dfa_start: DFA) -> DFA:
             split_map = {} # we use this for splitting the groups
             for state in group:
                 key = tuple(
-                    (i for i, g in enumerate(partitions) # we go through each partition
-                    for sym in input_symbols # for each symbol
-                    if state.edges.get(sym) in g) # if the edge of the state with that symbol is in the partition
-                    or None # if not, we add None
+                    ((i for i, g in enumerate(partitions) if state.edges.get(sym) in g), None)[0]
+                    for sym in input_symbols
                 )
                 split_map.setdefault(key, set()).add(state) # we add the state to the split map
             if len(split_map) > 1: # if we splitted the group we add it to the new partitions
