@@ -106,6 +106,7 @@ def _epsilonClosureTable(transition_table: TransitionTable) -> EpsilonTable:
 
                 for key in transition_table :
 
+                    # checking if the key is not already, cause of possible self reference
                     if key[0] is next_state and key not in closure : # we check if the state from the "row index" is in the epsilon transitions
                         closure.add(key) # we can re-add it, after all is just a set
                         stack.append(key) # then we added to the stack to see if it has also epislon transitions
