@@ -1,6 +1,6 @@
 from parsing.dfa import State as DFA
 
-def minimize_dfa(dfa_start: DFA) -> DFA:
+def minimizeDfa(dfa_start: DFA) -> DFA:
     # Step 1: Collect all DFA states
     all_states = set() # Empty set for collecting all the states
     stack = [dfa_start] # we use a stack for doing a DFS
@@ -51,7 +51,7 @@ def minimize_dfa(dfa_start: DFA) -> DFA:
     for group in partitions: #iterate trogh partition
         if not group: # if not any more partitions
             continue
-        rep = next(iter(group)) # to check the next partition 
+        rep = list(group)[0] # to check the next partition 
         for state in group:
             representative[state] = rep # the next state is the next partition
 

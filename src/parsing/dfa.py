@@ -1,4 +1,4 @@
-from parsing.nfa import NFA, State as NFAState
+from parsing.nfa import ThompsonsNFA as NFA, State as NFAState
 from pprint import pprint
 
 # I wasn't going to write that everytime I want it to type something

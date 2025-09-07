@@ -1,7 +1,7 @@
 from graphviz import Digraph
-from parsing.nfa import NFA
+from parsing.nfa import ThompsonsNFA as NFA
 
-def add_state(nfa_render, visited, state, state_id, state_idx):
+def addState(nfa_render, visited, state, state_id, state_idx):
     if state not in visited:
         visited.add(state) # we add the state for not checking it again, in any case a klean operator does bad stuff
 
@@ -32,13 +32,12 @@ def nfaToDiGraph(nfa: NFA):
     # we push to the stack the initial point of the nfa, and we start pushing to the stack all the subsecuent ones
     stack = [(nfa.initial, str(id(nfa.initial)))]
 
-
     while stack:
         state, state_id = stack.pop()
 
         state_idx += 1 
         
-        add_state(nfa_render, visited,state, state_id, state_idx)
+        addState(nfa_render, visited,state, state_id, state_idx)
 
         # we put both edges (with there respective state obviosly) for being check
         if state.edge1 and state.edge1 not in visited:

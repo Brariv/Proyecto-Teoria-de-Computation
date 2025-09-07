@@ -6,5 +6,5 @@ def fileReader(filename:str) -> list[str]:
             break
         except FileNotFoundError:
             print(f"File not found: {filename}")
-    return [line.strip() for line in lines]
+    return [line.strip() for line in lines if line != ""] # doing safe check for not introducing empty strings to the lexer
 

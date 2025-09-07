@@ -3,7 +3,7 @@ from drawing.dfa import dfaToDiGraph
 from match.nfa_match import matchStringToNfa
 from match.dfa_match import matchStringToDfa
 from parsing.dfa import  nfaToDfa
-from parsing.min_dfa import minimize_dfa
+from parsing.min_dfa import minimizeDfa
 from parsing.nfa import postfixToNfa
 from parsing.postfix import infixToPostfix
 from utils.argument_parsing import parseLexerArgs
@@ -25,11 +25,13 @@ if __name__ == "__main__":
 
         nfaToDiGraph(nfa).render(f"nfa_imgs/nfa_from_{line}", format="png", cleanup=True) # overriding the last one, so yeah
 
+        # before we mutate the dfa for minimization
         dfaToDiGraph(dfa).render(f"dfa_imgs/dfa_from_{line}", format="png", cleanup=True)  # overriding the last one, so yeah
 
-        print(f"\nGoing through regex: {line}")
+        # we start looking for matching
+        print(f"\nGoing through regex: {line}\n")
 
-        print("DFA Matching")
+        print("DFA Matching:")
 
         if matchStringToDfa(dfa, parse_arguments.string):
             print(f"The string: {parse_arguments.string}, did match the DFA")
@@ -37,7 +39,7 @@ if __name__ == "__main__":
             print(f"The string: {parse_arguments.string}, didn't match the DFA")
 
 
-        print("NFA Matching")
+        print("NFA Matching:")
 
         if matchStringToNfa(nfa, parse_arguments.string):
             print(f"The string: {parse_arguments.string}, did match the NFA")
@@ -46,13 +48,12 @@ if __name__ == "__main__":
 
 
 
-        dfa = minimize_dfa(dfa)
+        dfa = minimizeDfa(dfa) # the minimization
 
-
+        # we render the min dfa
         dfaToDiGraph(dfa).render(f"min_dfa_imgs/min_dfa_from_{line}", format="png", cleanup=True)  # overriding the last one, so yeah
 
-
-        print("\nMIN-DFA Matching")
+        print("MIN-DFA Matching:")
 
         if matchStringToDfa(dfa, parse_arguments.string):
             print(f"The string: {parse_arguments.string}, did match the MIN-DFA")

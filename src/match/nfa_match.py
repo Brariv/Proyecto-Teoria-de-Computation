@@ -1,5 +1,5 @@
 from utils.fa_travel import move
-from parsing.nfa import NFA, State as NFAState
+from parsing.nfa import ThompsonsNFA as NFA
 
 def matchStringToNfa(nfa:NFA, string:str) -> bool:
 
