@@ -1,0 +1,13 @@
+# Python venv files
+__pycache__
+bin/
+include/
+lib/
+pyvenv.cfg
+
+# all the fa imgs (don't need to be in the source)
+dfa_imgs/
+nfa_imgs/
+min_dfa_imgs/
+
+files/
