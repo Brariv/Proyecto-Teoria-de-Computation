@@ -27,6 +27,8 @@ if __name__ == "__main__":
 
         dfaToDiGraph(dfa).render(f"dfa_imgs/dfa_from_{line}", format="png", cleanup=True)  # overriding the last one, so yeah
 
+        print(f"\nGoing through regex: {line}")
+
         print("DFA Matching")
 
         if matchStringToDfa(dfa, parse_arguments.string):
@@ -34,10 +36,6 @@ if __name__ == "__main__":
         else:
             print(f"The string: {parse_arguments.string}, didn't match the DFA")
 
-
- 
-
-        print(f"\nGoing through regex: {line}")
 
         print("NFA Matching")
 
@@ -52,6 +50,8 @@ if __name__ == "__main__":
 
 
         dfaToDiGraph(dfa).render(f"min_dfa_imgs/min_dfa_from_{line}", format="png", cleanup=True)  # overriding the last one, so yeah
+
+
         print("\nMIN-DFA Matching")
 
         if matchStringToDfa(dfa, parse_arguments.string):
