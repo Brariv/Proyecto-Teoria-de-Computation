@@ -26,10 +26,10 @@ if __name__ == "__main__":
 
         dfa = nfaToDfa(nfa)
 
-        nfaToDiGraph(nfa).render(f"nfa_imgs/nfa_from_{line}", format="png", cleanup=True) # overriding the last one, so yeah
+        nfaToDiGraph(nfa).render(f"files/nfa_imgs/nfa_from_{line}", format="png", cleanup=True) # overriding the last one, so yeah
 
         # before we mutate the dfa for minimization
-        dfaToDiGraph(dfa).render(f"dfa_imgs/dfa_from_{line}", format="png", cleanup=True)  # overriding the last one, so yeah
+        dfaToDiGraph(dfa).render(f"files/dfa_imgs/dfa_from_{line}", format="png", cleanup=True)  # overriding the last one, so yeah
 
         # we start looking for matching
         print(f"\nGoing through regex: {line}\n")
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         dfa = minimizeDfa(dfa) # the minimization
 
         # we render the min dfa
-        dfaToDiGraph(dfa).render(f"min_dfa_imgs/min_dfa_from_{line}", format="png", cleanup=True)  # overriding the last one, so yeah
+        dfaToDiGraph(dfa).render(f"files/min_dfa_imgs/min_dfa_from_{line}", format="png", cleanup=True)  # overriding the last one, so yeah
 
         print("MIN-DFA Matching:")
 
