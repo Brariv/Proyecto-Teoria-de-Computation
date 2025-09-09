@@ -49,16 +49,13 @@ if __name__ == "__main__":
         else:
             print(f"The string: {parse_arguments.string}, didn't match the NFA")
 
-
-
-        dfa = minimizeDfa(dfa) # the minimization
-
+        min_dfa = minimizeDfa(dfa) # the minimization
         # we render the min dfa
-        dfaToDiGraph(dfa).render(f"files/min_dfa_imgs/min_dfa_from_{line}", format="png", cleanup=True)  # overriding the last one, so yeah
+        dfaToDiGraph(min_dfa).render(f"files/min_dfa_imgs/min_dfa_from_{line}", format="png", cleanup=True)  # overriding the last one, so yeah
 
         print("MIN-DFA Matching:")
 
-        if matchStringToDfa(dfa, parse_arguments.string):
+        if matchStringToDfa(min_dfa, parse_arguments.string):
             print(f"The string: {parse_arguments.string}, did match the MIN-DFA")
         else:
             print(f"The string: {parse_arguments.string}, didn't match the MIN-DFA")

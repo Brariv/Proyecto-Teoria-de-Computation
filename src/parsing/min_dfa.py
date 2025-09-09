@@ -34,7 +34,8 @@ def minimizeDfa(dfa_start: DFA) -> DFA:
             split_map = {} # we use this for splitting the groups
             for state in group:
                 key = tuple(
-                    ((i for i, g in enumerate(partitions) if state.edges.get(sym) in g), None)[0]
+                    # in case that the partition doesn't return anything it will just put a None value
+                    next((i for i, g in enumerate(partitions) if state.edges.get(sym) in g), None)
                     for sym in input_symbols
                 )
                 split_map.setdefault(key, set()).add(state) # we add the state to the split map
@@ -51,7 +52,7 @@ def minimizeDfa(dfa_start: DFA) -> DFA:
     for group in partitions: #iterate trogh partition
         if not group: # if not any more partitions
             continue
-        rep = list(group)[0] # to check the next partition 
+        rep = next(iter(group)) # to check the next partition 
         for state in group:
             representative[state] = rep # the next state is the next partition
 

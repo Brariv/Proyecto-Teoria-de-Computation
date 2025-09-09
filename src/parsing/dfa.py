@@ -175,7 +175,6 @@ def nfaToDfa(nfa: NFA):
 
             if next_closure != set():
 
-                #TODO: see a way for not repeating the creation of repeated closures
 
                 # the issue with this approach, is that we can repeate closures,
                 # but if we keep track of which ones have we seen, we can skip them
