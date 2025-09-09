@@ -38,3 +38,7 @@ A full circle lexer's implementation made purely with python utilities (except f
       python3 -O src/main.py --regex_file "<desire path>" "--string" "<string you want to try out>"
       ```
 
+
+
+# Demostration Video:
+[Demostration video](https://youtu.be/15SS0grseTE) 
