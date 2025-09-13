@@ -1,23 +1,9 @@
 { pkgs, ... }:
-
 let
-  pythonPackages = pkgs.pypy3Packages;
-  types-networkx =
-    let
-      pname = "types-networkx";
-      version = "3.1.0.20231220";
-    in
-    pythonPackages.buildPythonPackage {
-      inherit pname version;
-      src = pkgs.fetchPypi {
-        inherit pname version;
-        sha256 = "sha256-ikAz9jGqoVEpob6MFNw6lj1/BL7Zev9kYJIBw5w0nN0=";
-      };
-      doCheck = false;
-    };
+  pipyPackages = pkgs.pypy3Packages;
 in
 pkgs.mkShell {
-  buildInputs = with pythonPackages; [
+  buildInputs = with pipyPackages; [
     graphviz
     pprintpp
   ];
