@@ -6,5 +6,6 @@ pkgs.mkShell {
   buildInputs = with pipyPackages; [
     graphviz
     pprintpp
+    pkgs.pyright
   ];
 }
