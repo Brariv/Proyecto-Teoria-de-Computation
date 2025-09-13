@@ -54,7 +54,7 @@ def regexToStandarizeRegex(regex:str)->str:
                     eq_class += regex[temp_ch_idx]
                     temp_ch_idx += 1
 
-                new_regex = new_regex.replace(eq_class, _equivalenceClassToString(eq_class + "]"))
+                new_regex = new_regex.replace(eq_class + "]", _equivalenceClassToString(eq_class + "]"))
             case _:
                 pass
 
