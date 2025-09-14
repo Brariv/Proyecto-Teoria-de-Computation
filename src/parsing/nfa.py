@@ -28,6 +28,7 @@ def postfixToNfa(postfix: str) -> ThompsonsNFA:
     c_idx = 0
     while c_idx < len(postfix):
         match postfix[c_idx]:
+
             case '∗':
 
                 # We take the ThompsonsNFA that we want to apply the clean
@@ -75,29 +76,6 @@ def postfixToNfa(postfix: str) -> ThompsonsNFA:
                 nfa1.accept.edge1, nfa2.accept.edge1 = accept, accept
 
                 nfaStack.append(ThompsonsNFA(initial, accept))
-
-            case "/":
-
-
-                c = postfix[c_idx+1]
-
-                # we ignore the '/' cause in case it before another value,
-
-                # As Pablo told me, we create the symetrical nodes
-
-
-                initial: State = State() # the initial of the actual ThompsonsNFA we are doing, not the whole construct
-
-                accept: State = State()
-
-                initial.label, initial.edge1 = c, accept #type: ignore
-
-                # Goes to the stack for any other operators
-                nfaStack.append(ThompsonsNFA(initial, accept))
-
-                postfix = postfix[c_idx + 1:c_idx + 2]
-
-                print(postfix)
             case _:
 
                 c = postfix[c_idx]
