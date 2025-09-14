@@ -25,9 +25,8 @@ class ThompsonsNFA:
 def postfixToNfa(postfix: str) -> ThompsonsNFA:
     nfaStack:list[ThompsonsNFA] = []
 
-
-    print(postfix)
-    for c_idx in range(len(postfix)):
+    c_idx = 0
+    while c_idx < len(postfix):
         match postfix[c_idx]:
             case '∗':
 
@@ -96,7 +95,7 @@ def postfixToNfa(postfix: str) -> ThompsonsNFA:
                 # Goes to the stack for any other operators
                 nfaStack.append(ThompsonsNFA(initial, accept))
 
-                postfix = postfix[:c_idx - 1] + postfix[:c_idx + 2]
+                postfix = postfix[c_idx + 1:c_idx + 2]
 
                 print(postfix)
             case _:
@@ -118,5 +117,6 @@ def postfixToNfa(postfix: str) -> ThompsonsNFA:
                 # Goes to the stack for any other operators
                 nfaStack.append(ThompsonsNFA(initial, accept))
 
+        c_idx += 1
     return nfaStack.pop()
 
