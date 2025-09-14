@@ -32,12 +32,12 @@ def _equivalenceClassToString(eq_class:str)->str:
 
         if eq_classes.get(actual_eq_class, None):
             #we add the or operator in case of new ones
-            representation_eq_class += (eq_classes[actual_eq_class] + "|")
+            representation_eq_class += ( "|" + eq_classes[actual_eq_class])
             # and we reset it for checking new ones
             actual_eq_class = str()
 
     # and then we return the representation with a more friendly form
-    return "(" + representation_eq_class[0:len(representation_eq_class)-1] + ")" # I ain't returning all of it, cause of the "|" will always be the final operator
+    return representation_eq_class[1:] # I ain't returning all of it, cause of the "|" will always be the final operator
 
 
 # given a regex with common operators and equivalence-classes, returns that same regex with parse operators

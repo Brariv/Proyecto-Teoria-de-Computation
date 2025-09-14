@@ -25,8 +25,10 @@ class ThompsonsNFA:
 def postfixToNfa(postfix: str) -> ThompsonsNFA:
     nfaStack:list[ThompsonsNFA] = []
 
-    for c in postfix:
-        match c:
+
+    print(postfix)
+    for c_idx in range(len(postfix)):
+        match postfix[c_idx]:
             case '∗':
 
                 # We take the ThompsonsNFA that we want to apply the clean
@@ -55,6 +57,7 @@ def postfixToNfa(postfix: str) -> ThompsonsNFA:
                 # and there we know the rest
                 nfaStack.append(ThompsonsNFA(nfa1.initial, nfa2.accept))
 
+            
             case '|':
                 # Same as before
                 nfa2:ThompsonsNFA = nfaStack.pop()
@@ -74,7 +77,31 @@ def postfixToNfa(postfix: str) -> ThompsonsNFA:
 
                 nfaStack.append(ThompsonsNFA(initial, accept))
 
+            case "/":
+
+
+                c = postfix[c_idx+1]
+
+                # we ignore the '/' cause in case it before another value,
+
+                # As Pablo told me, we create the symetrical nodes
+
+
+                initial: State = State() # the initial of the actual ThompsonsNFA we are doing, not the whole construct
+
+                accept: State = State()
+
+                initial.label, initial.edge1 = c, accept #type: ignore
+
+                # Goes to the stack for any other operators
+                nfaStack.append(ThompsonsNFA(initial, accept))
+
+                postfix = postfix[:c_idx - 1] + postfix[:c_idx + 2]
+
+                print(postfix)
             case _:
+
+                c = postfix[c_idx]
 
                 if c == '𝜀':
                     c = None # when traversing, it will be better just to check for a 'None' type for taking advantage of the syntatic sugar
